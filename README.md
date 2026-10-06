@@ -2,10 +2,18 @@
 
 A calm mobile app for breathing, meditation and journaling. It works **fully offline**.
 
+There are two versions with the same features:
+
+- **Android app (Flutter)** in [`flutter_app/`](flutter_app/). Download the APK from this repository's
+  **Releases** page. See [`flutter_app/README.md`](flutter_app/README.md).
+- **Web app (PWA)** in this folder, described below. Installs from the browser on Android and iPhone.
+
+## Web app (PWA)
+
 Zen is a Progressive Web App (PWA). After the first visit it installs to the home screen like a normal app,
 and it never needs the internet again. Nothing leaves the phone: no accounts, no servers, no tracking.
 
-## Features
+### Features
 
 - **Today**: a daily quote, your streak, total minutes, and a 7-day practice view.
 - **Breathe**: an animated guide with four patterns (Calm 4-6, Box 4-4-4-4, 4-7-8, Balance 5-5).
@@ -15,7 +23,7 @@ and it never needs the internet again. Nothing leaves the phone: no accounts, no
 - **Journal**: a mood and a short note, saved on the device.
 - Light and dark themes follow your phone's setting.
 
-## Run it
+### Run it
 
 No build step or dependencies. Serve the folder over HTTP:
 
@@ -26,7 +34,7 @@ npx http-server -p 8080 -c-1
 
 Open http://localhost:8080. Offline support (the service worker) needs `localhost` or HTTPS.
 
-## Put it on your phone
+### Put it on your phone
 
 1. Host the folder on any static HTTPS host (GitHub Pages, Netlify, Cloudflare Pages, …).
 2. Open the URL on your phone once.
@@ -34,7 +42,7 @@ Open http://localhost:8080. Offline support (the service worker) needs `localhos
    - **iPhone (Safari):** Share → *Add to Home Screen*.
 3. Launch it from the home screen. It now works in airplane mode.
 
-## Project layout
+### Project layout
 
 | File | Purpose |
 | --- | --- |
@@ -47,7 +55,7 @@ Open http://localhost:8080. Offline support (the service worker) needs `localhos
 
 When you change any file, bump `CACHE_VERSION` in `sw.js` so installed copies pick up the update.
 
-## Data
+### Data
 
 Everything is stored in the browser's `localStorage` under the key `zen.v1`. Uninstalling the app or clearing
 site data deletes it.
