@@ -3,6 +3,20 @@
 The native Android version of Zen. It works fully offline: all data stays on the phone, sounds are bundled
 in the app, and the release build does not even request internet permission.
 
+## Focus mode
+
+The **Focus** tab keeps you off your phone for a set time (15 minutes to 2 hours):
+
+- **Lock phone to Zen:** uses Android's app pinning. After you confirm Android's prompt, Home, Recents and
+  notifications are blocked until the timer ends.
+- **Silence notifications:** turns on Do Not Disturb (priority only) and restores your previous setting after.
+  Android asks you to allow this once.
+- **No stop button.** A session ends only when its timer runs out. Back is ignored.
+
+Android always lets the person holding the phone unpin an app (hold Back and Recents), and no ordinary app
+can remove that. Turn on *Ask for PIN before unpinning* in the phone's App pinning settings to make it harder.
+The phone/emergency call screen still works while pinned.
+
 ## Get the APK
 
 Every push that touches `flutter_app/` builds an APK with GitHub Actions
@@ -42,7 +56,8 @@ flutter build apk      # build/app/outputs/flutter-apk/app-release.apk
 | --- | --- |
 | `lib/main.dart` | App entry, theme and tab navigation |
 | `lib/store.dart` | Sessions, journal and settings saved on the device |
-| `lib/screens/` | Today, Breathe, Meditate and Journal screens |
+| `lib/screens/` | Today, Breathe, Meditate, Focus and Journal screens |
+| `lib/focus_lock.dart` | Bridge to Android app pinning and Do Not Disturb (`MainActivity.kt`) |
 | `lib/sound.dart` | Bell and ambient sound playback |
 | `assets/sounds/` | Bundled bell and ambient audio |
 | `test/` | Unit and widget tests |

@@ -170,7 +170,7 @@ class _MeditateScreenState extends State<MeditateScreen> with WidgetsBindingObse
           child: SizedBox.square(
             dimension: ringSize,
             child: CustomPaint(
-              painter: _RingPainter(progress: _remaining / _total, track: c.line, color: c.accent),
+              painter: RingPainter(progress: _remaining / _total, track: c.line, color: c.accent),
               child: Center(
                 child: Text(
                   formatTime(_remaining),
@@ -186,7 +186,7 @@ class _MeditateScreenState extends State<MeditateScreen> with WidgetsBindingObse
           ),
         ),
         const SizedBox(height: 12),
-        _Toggle(
+        ZenToggle(
           label: 'Soft background sound',
           value: _ambient,
           onChanged: (v) {
@@ -195,7 +195,7 @@ class _MeditateScreenState extends State<MeditateScreen> with WidgetsBindingObse
             if (_running && !_paused) v ? Sound.startAmbient() : Sound.stopAmbient();
           },
         ),
-        _Toggle(
+        ZenToggle(
           label: 'Gentle bell every minute',
           value: _interval,
           onChanged: (v) {
@@ -218,68 +218,4 @@ class _MeditateScreenState extends State<MeditateScreen> with WidgetsBindingObse
       ],
     );
   }
-}
-
-class _Toggle extends StatelessWidget {
-  const _Toggle({required this.label, required this.value, required this.onChanged});
-
-  final String label;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = ZenColors.of(context);
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 320),
-        child: CheckboxListTile(
-          value: value,
-          onChanged: (v) => onChanged(v ?? false),
-          title: Text(label, style: TextStyle(fontSize: 15, color: c.ink)),
-          controlAffinity: ListTileControlAffinity.leading,
-          activeColor: c.accent,
-          dense: true,
-          contentPadding: EdgeInsets.zero,
-        ),
-      ),
-    );
-  }
-}
-
-class _RingPainter extends CustomPainter {
-  _RingPainter({required this.progress, required this.track, required this.color});
-
-  final double progress;
-  final Color track;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const stroke = 4.0;
-    final rect = Offset.zero & size;
-    final arcRect = rect.deflate(stroke);
-    canvas.drawCircle(
-      rect.center,
-      arcRect.width / 2,
-      Paint()
-        ..color = track
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke,
-    );
-    canvas.drawArc(
-      arcRect,
-      -math.pi / 2,
-      2 * math.pi * progress.clamp(0, 1),
-      false,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = stroke
-        ..strokeCap = StrokeCap.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_RingPainter old) => old.progress != progress || old.color != color || old.track != track;
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'focus_lock.dart';
 import 'screens/breathe.dart';
+import 'screens/focus.dart';
 import 'screens/journal.dart';
 import 'screens/meditate.dart';
 import 'screens/today.dart';
@@ -13,6 +15,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   final store = await ZenStore.load();
+  // If the app was closed mid-focus, don't leave Do Not Disturb on.
+  if (store.setting<bool>('dndActive', false)) {
+    await FocusLock.setDnd(false);
+    store.setSetting('dndActive', false);
+  }
   await Sound.init();
   runApp(ZenApp(store: store));
 }
@@ -60,6 +67,7 @@ class _HomeShellState extends State<HomeShell> {
             TodayScreen(store: store, onGo: _go),
             BreatheScreen(store: store),
             MeditateScreen(store: store),
+            FocusScreen(store: store),
             JournalScreen(store: store),
           ],
         ),
@@ -71,6 +79,7 @@ class _HomeShellState extends State<HomeShell> {
           NavigationDestination(icon: Icon(Icons.wb_sunny_outlined), label: 'Today'),
           NavigationDestination(icon: Icon(Icons.air), label: 'Breathe'),
           NavigationDestination(icon: Icon(Icons.timer_outlined), label: 'Meditate'),
+          NavigationDestination(icon: Icon(Icons.lock_outline), label: 'Focus'),
           NavigationDestination(icon: Icon(Icons.edit_note), label: 'Journal'),
         ],
       ),

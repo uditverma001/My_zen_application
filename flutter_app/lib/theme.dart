@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 /// The app's palette, in light and dark.
@@ -178,4 +180,70 @@ class ChoiceChips<T> extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Checkbox row used for session options.
+class ZenToggle extends StatelessWidget {
+  const ZenToggle({super.key, required this.label, required this.value, required this.onChanged});
+
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = ZenColors.of(context);
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 320),
+        child: CheckboxListTile(
+          value: value,
+          onChanged: (v) => onChanged(v ?? false),
+          title: Text(label, style: TextStyle(fontSize: 15, color: c.ink)),
+          controlAffinity: ListTileControlAffinity.leading,
+          activeColor: c.accent,
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+        ),
+      ),
+    );
+  }
+}
+
+/// Circular progress ring, drawn clockwise from 12 o'clock.
+class RingPainter extends CustomPainter {
+  RingPainter({required this.progress, required this.track, required this.color});
+
+  final double progress;
+  final Color track;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const stroke = 4.0;
+    final rect = Offset.zero & size;
+    final arcRect = rect.deflate(stroke);
+    canvas.drawCircle(
+      rect.center,
+      arcRect.width / 2,
+      Paint()
+        ..color = track
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke,
+    );
+    canvas.drawArc(
+      arcRect,
+      -math.pi / 2,
+      2 * math.pi * progress.clamp(0, 1),
+      false,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = StrokeCap.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(RingPainter old) => old.progress != progress || old.color != color || old.track != track;
 }

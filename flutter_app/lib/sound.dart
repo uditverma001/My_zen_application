@@ -15,10 +15,14 @@ class Sound {
   }
 
   static Future<void> bell({double volume = 1.0}) async {
-    final player = AudioPlayer();
-    player.onPlayerComplete.first.then((_) => player.dispose());
-    await player.setVolume(volume);
-    await player.play(AssetSource('sounds/bell.wav'));
+    try {
+      final player = AudioPlayer();
+      player.onPlayerComplete.first.then((_) => player.dispose());
+      await player.setVolume(volume);
+      await player.play(AssetSource('sounds/bell.wav'));
+    } catch (_) {
+      // No sound is better than a crash.
+    }
   }
 
   static Future<void> startAmbient() async {
