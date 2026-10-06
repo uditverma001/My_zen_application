@@ -15,7 +15,6 @@ The **Focus** tab keeps you off your phone for a set time (15 minutes to 2 hours
 
 Android always lets the person holding the phone unpin an app (hold Back and Recents), and no ordinary app
 can remove that. Turn on *Ask for PIN before unpinning* in the phone's App pinning settings to make it harder.
-The phone/emergency call screen still works while pinned.
 
 ## Get the APK
 
