@@ -77,4 +77,4 @@ flutter build apk      # build/app/outputs/flutter-apk/app-release.apk
 | `lib/sound.dart` | Bell and ambient sound playback |
 | `assets/sounds/` | Bundled bell and ambient audio |
 | `test/` | Flutter unit and widget tests |
-| `android/app/src/test/` | Tests for the schedule rules (`./gradlew :app:testReleaseUnitTest`) |
+| `android/app/src/test/` | Tests for the schedule rules (`./gradlew :app:testDebugUnitTest`) |
