@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'focus_config.dart';
 import 'focus_lock.dart';
 import 'screens/breathe.dart';
 import 'screens/focus.dart';
@@ -20,6 +24,8 @@ Future<void> main() async {
     await FocusLock.setDnd(false);
     store.setSetting('dndActive', false);
   }
+  // Keep Android's copy of allowed apps and schedules in step (it ignores this during focus).
+  await FocusLock.setConfig(FocusConfig.load(store).toNativeJson());
   await Sound.init();
   runApp(ZenApp(store: store));
 }
@@ -50,10 +56,45 @@ class HomeShell extends StatefulWidget {
   State<HomeShell> createState() => _HomeShellState();
 }
 
-class _HomeShellState extends State<HomeShell> {
+class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   int _tab = 0;
+  Timer? _focusWatch;
 
   void _go(int tab) => setState(() => _tab = tab);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // A scheduled session can begin while Zen is open, or Zen can be brought back by the blocker.
+    _focusWatch = Timer.periodic(const Duration(seconds: 2), (_) => _checkFocus());
+    _checkFocus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _focusWatch?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _checkFocus();
+  }
+
+  Future<void> _checkFocus() async {
+    if (focusSessionOpen.value) return;
+    final state = await FocusLock.state();
+    if (!state.active || !mounted || focusSessionOpen.value) return;
+    await openFocusSession(
+      context,
+      widget.store,
+      mode: FocusMode.blocker,
+      since: state.since ?? clock.now(),
+      until: state.until ?? clock.now(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

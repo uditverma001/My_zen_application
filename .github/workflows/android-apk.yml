@@ -66,6 +66,11 @@ jobs:
             --build-number=${{ github.run_number }}
           cp build/app/outputs/flutter-apk/app-release.apk "$RUNNER_TEMP/zen-1.0.${{ github.run_number }}.apk"
 
+      # Tests for the focus schedule rules that decide when apps are blocked.
+      - name: Android unit tests
+        working-directory: flutter_app/android
+        run: ./gradlew :app:testReleaseUnitTest --no-daemon
+
       - uses: actions/upload-artifact@v4
         with:
           name: zen-apk
